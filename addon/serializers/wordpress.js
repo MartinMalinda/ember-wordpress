@@ -25,6 +25,18 @@ export default DS.RESTSerializer.extend({
 		return this._super(store, primaryModelClass, payloadTemp, id, requestType);
 	},
 
+	keyForAttribute(attr){
+		if(attr === 'embedded'){
+			return '_embedded';
+		}
+		
+		return Ember.String.underscore(attr);
+	},
+
+	keyForRelationship(attr){
+		return Ember.String.underscore(attr);
+	},
+
 	normalize(modelClass, resourceHash, prop) {
 		// As you get bored typing `title.rendered`, here we move the `rendered` part up.
 
@@ -33,6 +45,8 @@ export default DS.RESTSerializer.extend({
 				resourceHash[property] = resourceHash[property].rendered;
 			}
 		});
+
+		console.log(this._super(modelClass, resourceHash, prop));
 
 		return this._super(modelClass, resourceHash, prop);
 	}
