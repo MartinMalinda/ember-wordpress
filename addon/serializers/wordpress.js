@@ -7,12 +7,16 @@ export default DS.RESTSerializer.extend({
 	// Here we wrap the payload in a named object after the model type
 	// because this is what Ember expects { post: { datahere } }
 	normalizeSingleResponse(store, primaryModelClass, payload, id, requestType) {
-		var payloadTemp = {};
-		payloadTemp[primaryModelClass.modelName] = [payload];
-
-		return this._super(store, primaryModelClass, payloadTemp, id, requestType);
+		let newPayload = {};
+		if (payload.data && Ember.typeOf(payload.data) === 'array') { // handle queryRecord properly
+			newPayload[primaryModelClass.modelName] = payload.data[0];
+			newPayload.meta = payload.meta;
+		} else {
+			newPayload[primaryModelClass.modelName] = [payload];
+		}
+		
+		return this._super(store, primaryModelClass, newPayload, id, requestType);
 	},
-
 	// Then, we can deal with our missing root element when extracting arrays from the JSON.
 	normalizeArrayResponse(store, primaryModelClass, payload, id, requestType) {
 		const payloadTemp = {};
@@ -45,8 +49,6 @@ export default DS.RESTSerializer.extend({
 				resourceHash[property] = resourceHash[property].rendered;
 			}
 		});
-
-		console.log(this._super(modelClass, resourceHash, prop));
 
 		return this._super(modelClass, resourceHash, prop);
 	}

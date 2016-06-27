@@ -1,6 +1,8 @@
 import DS from 'ember-data';
 import config from 'ember-get-config';
 
+const {$} = Ember;
+
 // The WP API requires a rest adapter.
 export default DS.RESTAdapter.extend({
 	host: config.wordpressHost,
@@ -16,7 +18,25 @@ export default DS.RESTAdapter.extend({
 				totalPages: headers['X-WP-TotalPages']
 			};
 			payload.meta = meta;
+			payload.id = Number(payload.id);
 		}
 		return this._super(status, headers, payload, requestData);
+	},
+
+	cleanParams(object){
+		for (var i in object) {
+		  if (object[i] === null || object[i] === undefined) {
+		    delete object[i];
+		  }
+		}
+	},
+
+	urlForCreateRecord(modelName, snapshot){
+		let url = this._super(...arguments);
+		let data = this.serialize(snapshot, {includeId: true});
+
+		this.cleanParams(data);
+
+		return `${url}?${$.param(data)}`;
 	}
 });
