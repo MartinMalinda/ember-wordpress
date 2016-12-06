@@ -11,8 +11,10 @@ export default DS.RESTSerializer.extend({
 		if (payload.data && Ember.typeOf(payload.data) === 'array') { // handle queryRecord properly
 			newPayload[primaryModelClass.modelName] = payload.data[0];
 			newPayload.meta = payload.meta;
+
 		} else {
-			newPayload[primaryModelClass.modelName] = [payload];
+			
+			newPayload[primaryModelClass.modelName] = Ember.typeOf(payload) === 'array' ? payload : [payload];
 		}
 		
 		return this._super(store, primaryModelClass, newPayload, id, requestType);

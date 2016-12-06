@@ -30,13 +30,40 @@ export default DS.RESTAdapter.extend({
 		  }
 		}
 	},
+	
+	// urlForFindRecord(id, modelName, snapshot){
+	// 	let url = this._super(...arguments);
+	// 	if(url.indexOf('/wp-admin') > -1){
+	// 		debugger;
+	// 	}
+	// 	return url.replace('/wp-admin', '');
+	// },
+
+	// urlForQueryRecord(id, modelName, snapshot){
+	// 	let url = this._super(...arguments);
+	// 	debugger;
+	// 	return url;
+	// },
+
+	// urlForQuery(id, modelName, snapshot){
+	// 	let url = this._super(...arguments);
+	// 	debugger;
+	// 	return url;
+	// },
+
+	// sortQueryParams(obj){
+	// 	debugger;
+
+	// 	return this._super(obj);
+	// },
+
 
 	urlForCreateRecord(modelName, snapshot){
 		let url = this._super(...arguments);
 		let data = this.serialize(snapshot, {includeId: true});
 
 		this.cleanParams(data);
-
-		return `${url}?${$.param(data)}`;
+		const url_with_params = `${url}?${$.param(data)}`;
+		return url_with_params;
 	}
 });
