@@ -52,6 +52,10 @@ export default DS.RESTSerializer.extend({
 			}
 		});
 
+		if(resourceHash.date_gmt && resourceHash.date){
+			resourceHash.date_gmt = resourceHash.date_gmt + '.000Z';
+		}
+
 		return this._super(modelClass, resourceHash, prop);
 	}
 });
